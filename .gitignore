@@ -1,0 +1,15 @@
+# File extensions
+*.out
+*.pt
+*.pth
+*.jpeg
+*.jpg
+*.tar
+*.npz
+*.lock
+
+# Directories
+/__pycache__
+/runs
+/tmp*
+/frames*

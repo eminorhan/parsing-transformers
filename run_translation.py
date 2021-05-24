@@ -621,30 +621,25 @@ def main():
         accuracy_per_sequence = sequence_accuracy(test_predictions, test_labels, pad_token_id=tokenizer.pad_token_id)
         exact_matches = (accuracy_per_sequence == 1.)       
 
-        # with open(data_args.gen_conditions_file, 'r') as f:
-        #     condition_list = json.load(f)
+        with open(data_args.gen_conditions_file, 'r') as f:
+            condition_list = json.load(f)
 
-        # exact_match_acc_by_condition = {}
-        # unique_conditions = list(set(condition_list))
-        # for cond in unique_conditions:
-        #     idx = [i for i, x in enumerate(condition_list) if x == cond]
-        #     exact_match_acc_by_condition[cond] = exact_matches[idx].sum() / len(idx)
+        exact_match_acc_by_condition = {}
+        unique_conditions = list(set(condition_list))
+        for cond in unique_conditions:
+            idx = [i for i, x in enumerate(condition_list) if x == cond]
+            exact_match_acc_by_condition[cond] = exact_matches[idx].sum() / len(idx)
       
-        # # overall accuracy
-        # exact_match_acc_by_condition["overall"] = exact_matches.sum() / len(exact_matches)
+        # overall accuracy
+        exact_match_acc_by_condition["overall"] = exact_matches.sum() / len(exact_matches)
 
-        # logger.info("Exact match accuries by condition: %s", exact_match_acc_by_condition)
+        logger.info("Exact match accuries by condition: %s", exact_match_acc_by_condition)
 
-        print('exact match overall: ', exact_matches.sum() / len(exact_matches))
+        # save results
+        save_filename = 'accuracies_{}.json'.format(training_args.output_dir)
 
-        # # save results
-        # if model_args.use_pretrained_weights:
-        #     save_filename = 'accuracies_{}_pretrained.json'.format(model_args.model_name_or_path)
-        # else:
-        #     save_filename = 'accuracies_{}_scratch.json'.format(model_args.model_name_or_path)
-
-        # with open(save_filename, 'w') as f:
-        #     json.dump(exact_match_acc_by_condition, f)
+        with open(save_filename, 'w') as f:
+            json.dump(exact_match_acc_by_condition, f)
 
         # generate predictions 
         if trainer.is_world_process_zero():
@@ -653,7 +648,7 @@ def main():
                     test_results.predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True
                 )
                 test_preds = [pred.strip() for pred in test_preds]
-                output_test_preds_file = os.path.join(training_args.output_dir, "test_generations.txt")
+                output_test_preds_file = os.path.join(training_args.output_dir, "gen_generations.txt")
                 with open(output_test_preds_file, "w") as writer:
                     writer.write("\n".join(test_preds))
 

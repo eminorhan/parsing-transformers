@@ -12,4 +12,4 @@
 /__pycache__
 /runs
 /tmp*
-/frames*
+/out*

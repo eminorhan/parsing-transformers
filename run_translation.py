@@ -102,10 +102,9 @@ class DataTrainingArguments:
     """
     Arguments pertaining to what data we are going to input our model for training and eval.
     """
-
+    benchmark: str = field(default=None, metadata={"help": "Benchmark (COGS or SCAN)."})
     source_lang: str = field(default=None, metadata={"help": "Source language id for translation."})
     target_lang: str = field(default=None, metadata={"help": "Target language id for translation."})
-
     dataset_name: Optional[str] = field(
         default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}
     )
@@ -281,15 +280,6 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
-    # Get the datasets: you can either provide your own JSON training and evaluation files (see below)
-    # or just provide the name of one of the public datasets available on the hub at https://huggingface.co/datasets/
-    # (the dataset will be downloaded automatically from the datasets Hub).
-    #
-    # For translation, only JSON files are supported, with one field named "translation" containing two keys for the
-    # source and target languages (unless you adapt what follows).
-    #
-    # In distributed training, the load_dataset function guarantee that only one local process can concurrently
-    # download the dataset.
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
         datasets = load_dataset(data_args.dataset_name, data_args.dataset_config_name)
@@ -305,14 +295,8 @@ def main():
             data_files["test"] = data_args.test_file
             extension = data_args.test_file.split(".")[-1]
         datasets = load_dataset(extension, data_files=data_files)
-    # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
-    # https://huggingface.co/docs/datasets/loading_datasets.html.
 
     # Load pretrained model and tokenizer
-    #
-    # Distributed training:
-    # The .from_pretrained methods guarantee that only one local process can concurrently
-    # download model & vocab.
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
@@ -621,32 +605,43 @@ def main():
         accuracy_per_sequence = sequence_accuracy(test_predictions, test_labels, pad_token_id=tokenizer.pad_token_id)
         exact_matches = (accuracy_per_sequence == 1.)       
 
-        with open(data_args.gen_conditions_file, 'r') as f:
-            condition_list = json.load(f)
+        if data_args.benchmark == 'COGS':
+            with open(data_args.gen_conditions_file, 'r') as f:
+                condition_list = json.load(f)
 
-        exact_match_acc_by_condition = {}
-        unique_conditions = list(set(condition_list))
-        for cond in unique_conditions:
-            idx = [i for i, x in enumerate(condition_list) if x == cond]
-            exact_match_acc_by_condition[cond] = exact_matches[idx].sum() / len(idx)
-      
-        # overall accuracy
-        exact_match_acc_by_condition["overall"] = exact_matches.sum() / len(exact_matches)
+            exact_match_acc_by_condition = {}
+            unique_conditions = list(set(condition_list))
+            for cond in unique_conditions:
+                idx = [i for i, x in enumerate(condition_list) if x == cond]
+                exact_match_acc_by_condition[cond] = exact_matches[idx].sum() / len(idx)
+        
+            # overall accuracy
+            exact_match_acc_by_condition["overall"] = exact_matches.sum() / len(exact_matches)
 
-        logger.info("Exact match accuries by condition: %s", exact_match_acc_by_condition)
+            logger.info("Exact match accuries by condition: %s", exact_match_acc_by_condition)
 
-        # save results
-        save_filename = 'accuracies_{}.json'.format(training_args.output_dir)
+            # save results
+            save_filename = 'accuracies_{}.json'.format(training_args.output_dir)
 
-        with open(save_filename, 'w') as f:
-            json.dump(exact_match_acc_by_condition, f)
+            with open(save_filename, 'w') as f:
+                json.dump(exact_match_acc_by_condition, f)
+
+        elif data_args.benchmark == 'SCAN':
+            # overall accuracy
+            exact_match_acc = exact_matches.sum() / len(exact_matches)
+
+            logger.info("Exact match accuracy: %f", exact_match_acc)
+
+            # save results
+            save_filename = 'accuracy_{}.json'.format(training_args.output_dir)
+
+            with open(save_filename, 'w') as f:
+                json.dump(exact_match_acc, f)
 
         # generate predictions 
         if trainer.is_world_process_zero():
             if training_args.predict_with_generate:
-                test_preds = tokenizer.batch_decode(
-                    test_results.predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True
-                )
+                test_preds = tokenizer.batch_decode(test_results.predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 test_preds = [pred.strip() for pred in test_preds]
                 output_test_preds_file = os.path.join(training_args.output_dir, "gen_generations.txt")
                 with open(output_test_preds_file, "w") as writer:

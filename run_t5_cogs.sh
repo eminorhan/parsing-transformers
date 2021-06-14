@@ -13,7 +13,7 @@ module purge
 module load cuda/11.1.74
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
-    --benchmark SCAN \
+    --benchmark COGS \
     --model_name_or_path t5-3b \
     --use_pretrained_weights False \
     --output_dir out_t5_3b_cogs_scr \

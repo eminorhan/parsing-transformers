@@ -328,7 +328,7 @@ def main():
     if model_args.model_parallel:
         import torch
         print('Using model parallel on {:d} GPUs'.format(torch.cuda.device_count()))
-        assert model_args.model_name_or_path in ['t5-11b', 't5-3b', 't5-large'], "Use model parallel only for sufficiently large models."
+        assert model_args.model_name_or_path in ['t5-11b', 't5-3b', 't5-large', 'Rostlab/prot_t5_xl_bfd'], "Use model parallel only for sufficiently large models."
         assert torch.cuda.device_count() > 1, "Model parallelism requires more than 1 GPU."
         if torch.cuda.device_count() == 4:
             device_map = {

@@ -3,7 +3,7 @@
 #SBATCH --account=cds
 #SBATCH --gres=gpu:rtx8000:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=200GB
+#SBATCH --mem=20GB
 #SBATCH --time=48:00:00
 #SBATCH --job-name=marian_scan
 #SBATCH --output=marian_scan_%A_%a.out
@@ -12,14 +12,14 @@
 module purge
 module load cuda/11.1.74
 
-SPLIT=around_right  # add_jump, add_turn_left, around_right, jump_around_right, length, opposite_right, right
-SRC_LANG=de  # de, es, fi, hu, fi
-TGT_LANG=fr  # fr, it, nl, fi, cs
-EPOCHS=5  # 5, 10, 15, 20, 25
+SPLIT=right  # add_jump, add_turn_left, around_right, jump_around_right, length, opposite_right, right
+SRC_LANG=es  # de, es, fi, hu, fi
+TGT_LANG=it  # fr, it, nl, fi, cs
+EPOCHS=30  # 5, 10, 15, 20, 25, 30
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --benchmark SCAN \
-    --use_pretrained_weights True \
+    --use_pretrained_weights False \
     --model_name_or_path Helsinki-NLP/opus-mt-$SRC_LANG-$TGT_LANG \
     --source_lang $SRC_LANG \
     --target_lang $TGT_LANG \

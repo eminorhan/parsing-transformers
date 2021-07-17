@@ -1,21 +1,22 @@
 #!/bin/bash
 
 #SBATCH --account=cds
+#SBATCH --exclude=gr069
 #SBATCH --gres=gpu:rtx8000:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=20GB
 #SBATCH --time=48:00:00
 #SBATCH --job-name=marian_scan
 #SBATCH --output=marian_scan_%A_%a.out
-#SBATCH --array=0-4
+#SBATCH --array=0-9
 
 module purge
 module load cuda/11.1.74
 
 SPLIT=right  # add_jump, add_turn_left, around_right, jump_around_right, length, opposite_right, right
-SRC_LANG=es  # de, es, fi, hu, fi
-TGT_LANG=it  # fr, it, nl, fi, cs
-EPOCHS=30  # 5, 10, 15, 20, 25, 30
+SRC_LANG=de  # de, es, fi, hu, fi
+TGT_LANG=fr  # fr, it, nl, fi, cs
+EPOCHS=33  # 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --benchmark SCAN \

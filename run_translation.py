@@ -328,14 +328,14 @@ def main():
     if model_args.model_parallel:
         import torch
         print('Using model parallel on {:d} GPUs'.format(torch.cuda.device_count()))
-        assert model_args.model_name_or_path in ['t5-11b', 't5-3b', 't5-large', 'Rostlab/prot_t5_xl_bfd'], "Use model parallel only for sufficiently large models."
+        assert model_args.model_name_or_path in ['t5-11b', 't5-3b', 't5-large', 'google/mt5-xl', 'Rostlab/prot_t5_xl_bfd'], "Use model parallel only for sufficiently large models."
         assert torch.cuda.device_count() > 1, "Model parallelism requires more than 1 GPU."
         if torch.cuda.device_count() == 4:
             device_map = {
-                0: [0, 1, 2, 3, 4, 5], 
-                1: [6, 7, 8, 9, 10, 11], 
-                2: [12, 13, 14, 15, 16, 17], 
-                3: [18, 19, 20, 21, 22, 23]}
+                0: [0, 1, 2], 
+                1: [3, 4, 5, 6, 7, 8, 9], 
+                2: [10, 11, 12, 13, 14, 15, 16], 
+                3: [17, 18, 19, 20, 21, 22, 23]}
         elif torch.cuda.device_count() == 3:
             device_map = {
                 0: [0, 1, 2, 3], 
@@ -601,6 +601,9 @@ def main():
         test_predictions = test_results.predictions[:, 1:]
         if isinstance(test_predictions, tuple):
             test_predictions = test_predictions[0]
+
+        print('Predictions:', test_predictions)
+        print('Labels:', test_labels)
 
         accuracy_per_sequence = sequence_accuracy(test_predictions, test_labels, pad_token_id=tokenizer.pad_token_id)
         exact_matches = (accuracy_per_sequence == 1.)       

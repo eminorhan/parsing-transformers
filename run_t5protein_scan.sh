@@ -26,9 +26,9 @@ python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --source_lang en \
     --target_lang en \
     --source_prefix "" \
-    --per_device_train_batch_size 16 \
-    --per_device_eval_batch_size 16 \
-    --num_train_epochs 2 \
+    --per_device_train_batch_size 20 \
+    --per_device_eval_batch_size 20 \
+    --num_train_epochs 1 \
     --overwrite_output_dir \
     --save_steps 2500000000 \
     --max_target_length 1024 \

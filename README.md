@@ -4,7 +4,7 @@
 
 Detailed results are in the [`results`](https://github.com/eminorhan/parsing-transformers/tree/master/results) folder. 
 
-# SCAN
+### SCAN
 
 We selected the number of finetuning/training epochs based on the average performance across all splits.
 

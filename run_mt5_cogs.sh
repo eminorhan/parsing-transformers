@@ -5,20 +5,20 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=32GB
 #SBATCH --time=48:00:00
-#SBATCH --job-name=jeliefdevermoordtme
-#SBATCH --output=jeliefdevermoordtme_%A_%a.out
+#SBATCH --job-name=altijdinmijngedachten
+#SBATCH --output=altijdinmijngedachten_%A_%a.out
 #SBATCH --array=0-4
 
 module purge
 module load cuda/11.1.74
 
-EPOCHS=15  # 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, etc.
+EPOCHS=10  # 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, etc.
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --benchmark COGS \
-    --model_name_or_path t5-3b \
+    --model_name_or_path google/mt5-xl \
     --use_pretrained_weights True \
-    --output_dir out_t5_3b_cogs_${EPOCHS}_$SLURM_ARRAY_TASK_ID \
+    --output_dir out_mt5_xl_cogs_${EPOCHS}_$SLURM_ARRAY_TASK_ID \
     --do_train \
     --do_predict \
     --source_lang en \
@@ -27,8 +27,8 @@ python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --train_file data_cogs/train.json \
     --test_file data_cogs/gen.json \
     --gen_conditions_file data_cogs/cogs_gen_conditions.txt \
-    --per_device_train_batch_size 32 \
-    --per_device_eval_batch_size 32 \
+    --per_device_train_batch_size 16 \
+    --per_device_eval_batch_size 8 \
     --overwrite_output_dir \
     --save_steps 2500000000 \
     --max_target_length 1024 \

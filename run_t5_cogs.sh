@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=32GB
 #SBATCH --time=48:00:00
-#SBATCH --job-name=jeliefdevermoordtme
-#SBATCH --output=jeliefdevermoordtme_%A_%a.out
+#SBATCH --job-name=t5_cogs
+#SBATCH --output=t5_cogs_%A_%a.out
 #SBATCH --array=0-4
 
 module purge

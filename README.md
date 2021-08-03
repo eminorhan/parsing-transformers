@@ -12,8 +12,8 @@ Detailed results are in the [`results`](https://github.com/eminorhan/parsing-tra
 | `t5_3b_pretrained`       | 84.1    |
 | `mt5_xl_pretrained` 	    | 84.6    |
 | `t5_xl_bfd_pretrained`   | 0.0     |
-| `marian_defr_scratch`    | 2.9     |
-| `marian_defr_pretrained` | 62.7    |
+| `marian_defr_scratch`    | 62.7    |
+| `marian_defr_pretrained` | 83.4    |
 
 ### SCAN
 

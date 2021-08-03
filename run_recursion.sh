@@ -6,8 +6,8 @@
 #SBATCH --mem=250GB
 #SBATCH --time=48:00:00
 #SBATCH --array=0
-#SBATCH --job-name=t5_cogs
-#SBATCH --output=t5_cogs_%A_%a.out
+#SBATCH --job-name=recursion
+#SBATCH --output=recursion_%A_%a.out
 
 module purge
 module load cuda/11.1.74

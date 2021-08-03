@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=32GB
 #SBATCH --time=48:00:00
-#SBATCH --job-name=altijdinmijngedachten
-#SBATCH --output=altijdinmijngedachten_%A_%a.out
+#SBATCH --job-name=mt5_cogs
+#SBATCH --output=mt5_cogs_%A_%a.out
 #SBATCH --array=0-4
 
 module purge

@@ -14,11 +14,12 @@ module load cuda/11.1.74
 
 SRC_LANG=de  # de, es, fi, hu, fi
 TGT_LANG=fr  # fr, it, nl, fi, cs
-EPOCHS=30  # 5, 10, 15, 20, 25, 30
+EPOCHS=100  # 5, 10, 15, 20, 25, 30
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
+    --benchmark COGS \
     --model_name_or_path Helsinki-NLP/opus-mt-$SRC_LANG-$TGT_LANG \
-    --use_pretrained_weights True \
+    --use_pretrained_weights False \
     --output_dir out_marian_${SRC_LANG}_${TGT_LANG}_${EPOCHS}_$SLURM_ARRAY_TASK_ID \
     --source_lang $SRC_LANG \
     --target_lang $TGT_LANG \

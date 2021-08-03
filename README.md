@@ -6,6 +6,8 @@ Detailed results are in the [`results`](https://github.com/eminorhan/parsing-tra
 
 ### COGS
 
+We finetuned/trained the following models until convergence.
+
 | model                    | average |
 | ------------------       |:-------:|
 | `t5_3b_scratch`          | 0.0     |

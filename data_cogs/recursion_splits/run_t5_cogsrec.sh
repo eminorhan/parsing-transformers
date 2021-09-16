@@ -12,7 +12,7 @@
 module purge
 module load cuda/11.1.74
 
-MAX_TRAIN_DEPTH=3  # 3, 4, 5, 6, 7, 8, 9, 10, 11
+MAX_TRAIN_DEPTH=11  # 3, 4, 5, 6, 7, 8, 9, 10, 11
 ((MIN_TEST_DEPTH=MAX_TRAIN_DEPTH+1))
 EPOCHS=10  
 
@@ -29,8 +29,8 @@ python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --test_file data_cogs/recursion_splits/test_recursion_depth_from_${MIN_TEST_DEPTH}_to_12.json \
     --gen_conditions_file data_cogs/recursion_splits/conditions_recursion_depth_from_${MIN_TEST_DEPTH}_to_12.json \
     --output_dir out_t5_3b_cogsrec_${MIN_TEST_DEPTH}_$SLURM_ARRAY_TASK_ID \
-    --per_device_train_batch_size 32 \
-    --per_device_eval_batch_size 32 \
+    --per_device_train_batch_size 8 \
+    --per_device_eval_batch_size 8 \
     --overwrite_output_dir \
     --save_steps 2500000000 \
     --max_target_length 1024 \

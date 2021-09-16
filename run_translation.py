@@ -324,6 +324,25 @@ def main():
         print('Using a model with random weights')
         model = AutoModelForSeq2SeqLM.from_config(config)
 
+    if model_args.model_name_or_path == 'Rostlab/prot_t5_base_mt_uniref50':
+        from torch.nn import Embedding, Linear
+        print('This is the protein T5 model. Replacing the shared embedding layer with a randomized T5 size embedding.')
+        model.shared = Embedding(32128, 768)
+        model.encoder.embed_tokens = model.shared
+        model.decoder.embed_tokens = model.shared
+        model.lm_head = Linear(in_features=768, out_features=32128, bias=False)
+    elif model_args.model_name_or_path == 'Rostlab/prot_t5_xl_bfd':
+        from torch.nn import Embedding, Linear
+        print('This is the protein T5 model. Replacing the shared embedding layer with a randomized T5 size embedding.')
+        model.shared = Embedding(32128, 1024)
+        model.encoder.embed_tokens = model.shared
+        model.decoder.embed_tokens = model.shared
+        model.lm_head = Linear(in_features=1024, out_features=32128, bias=False)
+    else:
+        print('Using the original embedding layer.')
+
+    print(model)
+
     # optinally add model parallelism here
     if model_args.model_parallel:
         import torch

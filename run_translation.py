@@ -341,6 +341,7 @@ def main():
     else:
         print('Using the original embedding layer.')
 
+    # print out model for inspection
     print(model)
 
     # optinally add model parallelism here

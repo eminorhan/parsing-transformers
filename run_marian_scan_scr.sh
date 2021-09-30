@@ -15,11 +15,11 @@ module load cuda/11.1.74
 SPLIT=right  # add_jump, add_turn_left, around_right, jump_around_right, length, opposite_right, right
 SRC_LANG=de  # de, es, fi, hu, fi
 TGT_LANG=fr  # fr, it, nl, fi, cs
-EPOCHS=13
+EPOCHS=35
 
 python -u /scratch/eo41/parsing-transformers/run_translation.py \
     --benchmark SCAN \
-    --use_pretrained_weights True \
+    --use_pretrained_weights False \
     --model_name_or_path Helsinki-NLP/opus-mt-$SRC_LANG-$TGT_LANG \
     --source_lang $SRC_LANG \
     --target_lang $TGT_LANG \
